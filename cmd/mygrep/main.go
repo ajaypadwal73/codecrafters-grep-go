@@ -32,6 +32,11 @@ func main() {
 		if !ok {
 			os.Exit(1)
 		}
+	case "\\w":
+		ok := matchAlphaNumeric(line)
+		if !ok {
+			os.Exit(1)
+		}
 	default:
 		ok, err := matchLine(line, pattern)
 		if err != nil {
@@ -66,4 +71,11 @@ func matchLine(line []byte, pattern string) (bool, error) {
 func matchDigits(line []byte) (bool) {
 	ok := bytes.ContainsAny(line, "012345678")
 	return ok
+}
+
+func matchAlphaNumeric(line []byte) bool {
+	pattern := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
+	ok := bytes.ContainsAny(line, pattern)
+	return ok
+
 }
