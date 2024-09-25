@@ -26,17 +26,23 @@ func main() {
 		os.Exit(2)
 	}
 
-	switch pattern {
-	case "\\d":
+	switch {
+	case pattern == "\\d":
 		ok := matchDigits(line)
 		if !ok {
 			os.Exit(1)
 		}
-	case "\\w":
+	case pattern == "\\w":
 		ok := matchAlphaNumeric(line)
 		if !ok {
 			os.Exit(1)
 		}
+	case len(pattern) > 2 && pattern[0] == '[' && pattern[len(pattern) - 1] == ']':
+		ok := matchPositiveCharGroups(line, pattern[1:len(pattern)- 1])
+		if !ok {
+			os.Exit(1)
+		}
+
 	default:
 		ok, err := matchLine(line, pattern)
 		if err != nil {
@@ -78,4 +84,9 @@ func matchAlphaNumeric(line []byte) bool {
 	ok := bytes.ContainsAny(line, pattern)
 	return ok
 
+}
+
+func matchPositiveCharGroups(line []byte, pattern string) (bool) {
+	ok := bytes.ContainsAny(line, pattern)
+	return ok
 }
