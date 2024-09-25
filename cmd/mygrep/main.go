@@ -37,12 +37,16 @@ func main() {
 		if !ok {
 			os.Exit(1)
 		}
+	case len(pattern) > 3 && pattern[0] == '[' && pattern[len(pattern) - 1] == ']' && pattern[1] == '^':
+		ok := matchnNegativeCharGroups(line, pattern[2:len(pattern)- 1])
+		if !ok {
+			os.Exit(1)
+		}	
 	case len(pattern) > 2 && pattern[0] == '[' && pattern[len(pattern) - 1] == ']':
 		ok := matchPositiveCharGroups(line, pattern[1:len(pattern)- 1])
 		if !ok {
 			os.Exit(1)
 		}
-
 	default:
 		ok, err := matchLine(line, pattern)
 		if err != nil {
@@ -89,4 +93,13 @@ func matchAlphaNumeric(line []byte) bool {
 func matchPositiveCharGroups(line []byte, pattern string) (bool) {
 	ok := bytes.ContainsAny(line, pattern)
 	return ok
+}
+
+func matchnNegativeCharGroups(line []byte, pattern string) (bool) {
+	for _, c := range line {
+		if !bytes.ContainsAny([]byte(pattern), string(c)) {
+			return true
+		}
+	}
+	return false
 }
